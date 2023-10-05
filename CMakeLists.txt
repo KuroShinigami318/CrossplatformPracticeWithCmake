@@ -16,5 +16,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/common/)
 # Add source to this project's executable.
 set(SOURCES CrossPlatformPractice.cpp)
 add_executable (CrossPlatformPractice ${SOURCES})
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CrossPlatformPractice)
 
 # TODO: Add tests and install targets if needed.
