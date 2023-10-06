@@ -249,9 +249,11 @@ int main()
     }
     utils::Connection onClick = button->sig_onClick.Connect(&OnButtonClicked);
 
-    std::this_thread::sleep_for(std::chrono::seconds(5)); // click after 5s
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // click after 1s
     // simulate a click here
     Button* actualButton = dynamic_cast<Button*>(button.get());
     actualButton->SimulateClick(20, 100);
     utils::Log::Wait();
+    system("pause");
+    return 0;
 }
