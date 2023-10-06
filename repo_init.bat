@@ -3,11 +3,12 @@ set "encryptedapikey=01000000d08c9ddf0115d1118c7a00c04fc297eb0100000014bbe3df1d2
 set "repo=CommonLib"
 set "github_api_version=2022-11-28"
 set "libname=common"
+set "release_tag=v2.0.1"
 
 call Decrypt %encryptedapikey% apikey
 set "apikey=%apikey%"
 
-curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer %apikey%" -H "X-GitHub-Api-Version: %github_api_version%" --output "%libname%.zip" https://api.github.com/repos/KuroShinigami318/%repo%/zipball/v2.0.1
+curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer %apikey%" -H "X-GitHub-Api-Version: %github_api_version%" --output "%libname%.zip" https://api.github.com/repos/KuroShinigami318/%repo%/zipball/%release_tag%
 tar -xf %libname%.zip
 
 rem find full folder name
