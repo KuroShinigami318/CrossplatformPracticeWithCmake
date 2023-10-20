@@ -2,4 +2,4 @@
 set "repo=CommonLib"
 set "github_api_version=2022-11-28"
 set "libname=common"
-set "release_tag=v2.0.1"
+set "release_tag=v2.1.0"
