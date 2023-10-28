@@ -5,6 +5,9 @@ if not "%1" == "Debug" (
                 goto :EOF
 	)
 )
+if not exist "libs" (
+	call repo_init
+)
 if not exist "build" (
 	call gen_prj
 )
