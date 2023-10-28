@@ -18,5 +18,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/common/include/)
 file(GLOB SOURCES ${CrossPlatformPractice_SOURCE_DIR}/src/*.cpp)
 add_executable (CrossPlatformPractice ${SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CrossPlatformPractice)
+set_target_properties(CrossPlatformPractice PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CrossPlatformPractice_SOURCE_DIR}/Debug
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CrossPlatformPractice_SOURCE_DIR}/Release
+)
 
 # TODO: Add tests and install targets if needed.
