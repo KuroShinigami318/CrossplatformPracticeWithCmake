@@ -12,9 +12,10 @@ endif()
 project ("CrossPlatformPractice")
 
 set(CMAKE_CXX_STANDARD 20)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/common/)
+# hard-include
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/common/include/)
 # Add source to this project's executable.
-set(SOURCES CrossPlatformPractice.cpp)
+file(GLOB SOURCES ${CrossPlatformPractice_SOURCE_DIR}/src/*.cpp)
 add_executable (CrossPlatformPractice ${SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CrossPlatformPractice)
 

@@ -8,16 +8,22 @@ set "apikey=%apikey%"
 curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer %apikey%" -H "X-GitHub-Api-Version: %github_api_version%" --output "%libname%.zip" https://api.github.com/repos/KuroShinigami318/%repo%/zipball/%release_tag%
 tar -xf %libname%.zip
 
+if exist "include" rmdir "include" /s /q
 rem find full folder name
 rem https://stackoverflow.com/questions/27829749/finding-a-directory-name-or-a-folder-name-in-batch-file
 for /f %%a in ('dir *%repo%* /B /A:D') do if exist %%a (
-    rename %%a %libname%
+rem todo: should change this to repo that will always has include and/or src folder
+    rename %%a "include"
 )
-if not exist %libname% (
+rem todo: also move the lib-repo into libs folder without using these tricky.
+if not exist "include" (
    echo "%libname% not found"
    goto :EOF
 )
-if exist include rmdir include /s /q
-mkdir include
-move %libname% include/%libname%
+if exist "libs/%libname%" rmdir "libs/%libname%" /s /q
+if not exist "libs" (
+   mkdir "libs"
+)
+mkdir "libs/%libname%"
+move "include" "libs/%libname%/include"
 del %libname%.zip
