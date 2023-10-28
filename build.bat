@@ -6,8 +6,7 @@ if not "%1" == "Debug" (
 	)
 )
 if not exist "build" (
-	call :MakeError "Make sure you have run gen_prj first"
-        goto :EOF
+	call gen_prj
 )
 cmake --build build --config %1%
 goto :EOF
