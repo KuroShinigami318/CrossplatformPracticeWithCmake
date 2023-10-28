@@ -5,13 +5,13 @@ if not "%1" == "Debug" (
                 goto :EOF
 	)
 )
-if not exist "libs" (
+if not exist "../libs" (
 	call repo_init
 )
-if not exist "build" (
+if not exist "../build" (
 	call gen_prj
 )
-cmake --build build --config %1%
+cmake --build ../build --config %1%
 goto :EOF
 
 :MakeError

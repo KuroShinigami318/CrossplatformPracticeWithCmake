@@ -20,10 +20,10 @@ if not exist "include" (
    echo "%libname% not found"
    goto :EOF
 )
-if exist "libs/%libname%" rmdir "libs/%libname%" /s /q
-if not exist "libs" (
-   mkdir "libs"
+if exist "../libs/%libname%" rmdir "../libs/%libname%" /s /q
+if not exist "../libs" (
+   mkdir "../libs"
 )
-mkdir "libs/%libname%"
-move "include" "libs/%libname%/include"
+mkdir "../libs/%libname%"
+move "include" "../libs/%libname%/include"
 del %libname%.zip
