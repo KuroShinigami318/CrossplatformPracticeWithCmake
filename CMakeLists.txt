@@ -14,9 +14,11 @@ project ("CrossPlatformPractice")
 set(CMAKE_CXX_STANDARD 20)
 # hard-include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/common/include/)
+# Add lib source
+file(GLOB LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/libs/common/src/*.cpp)
 # Add source to this project's executable.
 file(GLOB SOURCES ${CrossPlatformPractice_SOURCE_DIR}/src/*.cpp)
-add_executable (CrossPlatformPractice ${SOURCES})
+add_executable (CrossPlatformPractice ${SOURCES} ${LIB_SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CrossPlatformPractice)
 set_target_properties(CrossPlatformPractice PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CrossPlatformPractice_SOURCE_DIR}/Debug
