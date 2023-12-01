@@ -1,5 +1,5 @@
 @echo off
-set "repo=CommonLib"
-set "github_api_version=2022-11-28"
-set "libname=common"
-set "release_tag=v4.0.1"
+set repo="CommonLib"
+set github_api_version="2022-11-28"
+set libname="common"
+set release_tag="v4.4.2"
