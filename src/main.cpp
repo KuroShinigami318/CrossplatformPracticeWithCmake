@@ -2,6 +2,7 @@
 #include <winapifamily.h>
 #endif
 #include "common-utils.h"
+#include "Log.h"
 
 struct Point
 {
