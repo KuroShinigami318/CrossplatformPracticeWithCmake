@@ -1,7 +1,7 @@
 ﻿#if defined(_WIN32) || defined(WIN32)
 #include <winapifamily.h>
 #endif
-#include "common-utils.h"
+#include "stdafx.h"
 #include "Log.h"
 
 struct Point

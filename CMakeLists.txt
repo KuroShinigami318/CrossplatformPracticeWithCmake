@@ -12,17 +12,19 @@ endif()
 project ("CrossPlatformPractice")
 
 set(CMAKE_CXX_STANDARD 20)
-# hard-include
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/common/include/)
-# Add lib source
-file(GLOB LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/libs/common/src/*.cpp)
+
+add_subdirectory(libs/common)
+
 # Add source to this project's executable.
 file(GLOB SOURCES ${CrossPlatformPractice_SOURCE_DIR}/src/*.cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_executable (CrossPlatformPractice ${SOURCES} ${LIB_SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CrossPlatformPractice)
 set_target_properties(CrossPlatformPractice PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CrossPlatformPractice_SOURCE_DIR}/Debug
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CrossPlatformPractice_SOURCE_DIR}/Release
 )
+
+target_link_libraries(CrossPlatformPractice CommonLib)
 
 # TODO: Add tests and install targets if needed.
