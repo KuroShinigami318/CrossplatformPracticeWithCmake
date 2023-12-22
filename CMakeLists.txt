@@ -24,7 +24,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/Debug
                       RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_SOURCE_DIR}/Release
 )
-
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/assets)
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_CURRENT_BINARY_DIR}/assets
+)
+add_dependencies(${PROJECT_NAME} copy_assets)
+# file(COPY assets DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_BUILD_TYPE})
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_CURRENT_SOURCE_DIR}/$<CONFIG>/assets
+)
+endif()
 target_link_libraries(${PROJECT_NAME} CommonLib)
-
-# TODO: Add tests and install targets if needed.
