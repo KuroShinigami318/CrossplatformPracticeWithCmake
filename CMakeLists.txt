@@ -12,8 +12,17 @@ endif()
 project ("CrossPlatformPractice")
 
 set(CMAKE_CXX_STANDARD 20)
-
-add_subdirectory(libs/common)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs_dep.json LIBS_DEP_JSON)
+string(JSON total_libs LENGTH "${LIBS_DEP_JSON}" libs)
+MATH(EXPR total_libs "${total_libs}-1")
+foreach(IDX RANGE ${total_libs})
+    # Get the name from the current JSON element.
+    string(JSON CUR_NAME GET ${LIBS_DEP_JSON} libs ${IDX} name)
+    add_subdirectory(libs/${CUR_NAME})
+    # Get the URL from the current JSON element.
+    string(JSON TARGET_LINK_PRJ GET ${LIBS_DEP_JSON} libs ${IDX} prj_name)
+    list(APPEND TARGETS_LINK_PRJ ${TARGET_LINK_PRJ})
+endforeach()
 
 # Add source to this project's executable.
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -36,4 +45,6 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${CMAKE_CURRENT_SOURCE_DIR}/$<CONFIG>/assets
 )
 endif()
-target_link_libraries(${PROJECT_NAME} CommonLib)
+foreach(TARGET_LINK_LIB ${TARGETS_LINK_PRJ})
+target_link_libraries(${PROJECT_NAME} ${TARGET_LINK_LIB})
+endforeach()
