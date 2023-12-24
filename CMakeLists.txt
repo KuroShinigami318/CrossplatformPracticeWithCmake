@@ -12,13 +12,14 @@ endif()
 project ("CrossPlatformPractice")
 
 set(CMAKE_CXX_STANDARD 20)
+set(LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/libs_dep.json LIBS_DEP_JSON)
 string(JSON total_libs LENGTH "${LIBS_DEP_JSON}" libs)
 MATH(EXPR total_libs "${total_libs}-1")
 foreach(IDX RANGE ${total_libs})
     # Get the name from the current JSON element.
     string(JSON CUR_NAME GET ${LIBS_DEP_JSON} libs ${IDX} name)
-    add_subdirectory(libs/${CUR_NAME})
+    add_subdirectory(${LIBS_DIR}/${CUR_NAME})
     # Get the URL from the current JSON element.
     string(JSON TARGET_LINK_PRJ GET ${LIBS_DEP_JSON} libs ${IDX} prj_name)
     list(APPEND TARGETS_LINK_PRJ ${TARGET_LINK_PRJ})
@@ -27,7 +28,7 @@ endforeach()
 # Add source to this project's executable.
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_executable (${PROJECT_NAME} ${SOURCES} ${LIB_SOURCES})
+add_executable (${PROJECT_NAME} ${SOURCES})
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_SOURCE_DIR}/Debug
