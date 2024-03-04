@@ -3,14 +3,12 @@
 #endif
 #include "stdafx.h"
 #include "Log.h"
+#include "GuiTypes.h"
+#include "InputParser.h"
 
-struct Point
+namespace gui
 {
-public:
-    Point() : Point(0.0f, 0.0f) {}
-    Point(float i_x, float i_y) : x(i_x), y(i_y) {}
-    float x, y;
-};
+using namespace types;
 
 #define CheckCoordinatesInRange(coordinate_id, startPosition, endPosition, point) \
     startPosition.coordinate_id <= point.coordinate_id && point.coordinate_id <= endPosition.coordinate_id
@@ -20,6 +18,8 @@ struct IShape
 public:
     virtual size_t GetArea() const = 0;
     virtual size_t GetPerimeter() const = 0;
+    // element position means center position of the shape
+    virtual bool IsInsideArea(const Point i_elementPosition, const Point i_pointer) const = 0;
     virtual std::string GetTypeName() const = 0;
     virtual std::unique_ptr<IShape> Clone() = 0;
 
@@ -32,44 +32,64 @@ protected:
 struct RectangleShape : public IShape
 {
 public:
-    RectangleShape(uint16_t i_width, uint16_t i_height) : width(i_width), height(i_height)
+    RectangleShape(Length i_width, Length i_height) : width(i_width), height(i_height)
     {
+        assert(i_width.is_valid() && i_height.is_valid());
+        if (!i_width.is_valid() || !i_height.is_valid())
+        {
+            ERROR_LOG("Invalid Value", "Invalid length");
+        }
     }
     ~RectangleShape() = default;
 
-    virtual size_t GetArea() const override
+    size_t GetArea() const override
     {
-        return size_t(width * height);
+        return size_t((width * height).value);
     }
 
-    virtual size_t GetPerimeter() const override
+    size_t GetPerimeter() const override
     {
-        return size_t(2 * (width + height));
+        return size_t(2 * (width + height).value);
     }
 
-    virtual std::string GetTypeName() const override
+    bool IsInsideArea(const Point i_elementPosition, const Point i_pointer) const override
+    {
+        if (!(i_elementPosition.IsValid() && i_pointer.IsValid()) || !(width.is_valid() && height.is_valid()))
+        {
+            return false;
+        }
+        uint16_t halfWidth = width.value / 2;
+        uint16_t halfHeight = height.value / 2;
+        Point startPosition(i_elementPosition.x - halfWidth, i_elementPosition.y - halfHeight); // top left
+        Point endPosition(i_elementPosition.x + halfWidth, i_elementPosition.y + halfHeight); // bottom right
+        const bool isXInRange = CheckCoordinatesInRange(x, startPosition, endPosition, i_pointer);
+        const bool isYInRange = CheckCoordinatesInRange(y, startPosition, endPosition, i_pointer);
+        return isXInRange && isYInRange;
+    }
+
+    std::string GetTypeName() const override
     {
         return "RectangleShape";
     }
 
-    virtual std::unique_ptr<IShape> Clone() override
+    std::unique_ptr<IShape> Clone() override
     {
         return std::make_unique<RectangleShape>(width, height);
     }
 
-    uint16_t GetWidth() const
+    Length GetWidth() const
     {
         return width;
     }
 
-    uint16_t GetHeight() const
+    Length GetHeight() const
     {
         return height;
     }
 
 private:
-    uint16_t width;
-    uint16_t height;
+    Length width;
+    Length height;
 };
 
 class IButton
@@ -88,7 +108,7 @@ public:
         return m_buttonPosition;
     }
 
-    utils::Signal<void(float, float), SignalKey> sig_onClick;
+    utils::Signal<void(), SignalKey> sig_onClick;
 
 protected:
     template <class _Ty> friend struct std::default_delete;
@@ -110,13 +130,11 @@ public:
 
     ~Button() = default;
 
-    virtual void SimulateClick(float x, float y) override
+    void SimulateClick(float x, float y) override
     {
-        // todo
-        // check if click pointer is inside area of Button then Emit Action Onclick
-        if (false)
+        if (m_shape->IsInsideArea(m_buttonPosition, Point(x, y)))
         {
-            utils::Access<IButton::SignalKey>(sig_onClick).Emit(x, y);
+            utils::Access<IButton::SignalKey>(sig_onClick).Emit();
         }
     }
 };
@@ -206,10 +224,10 @@ public:
     virtual std::unique_ptr<IButton> CreateButton(const Point& i_buttonPosition, const IShape& i_buttonShape) = 0;
 };
 
-class WinGUIFactory : public IGUIFactory
+class GUIFactory : public IGUIFactory
 {
 public:
-    ~WinGUIFactory() = default;
+    ~GUIFactory() = default;
 
     std::unique_ptr<IButton> CreateButton(const Point& i_buttonPosition, const IShape& i_buttonShape) override
     {
@@ -228,17 +246,20 @@ public:
     }
 };
 
-void OnButtonClicked(float x, float y)
+} // namespace gui
+
+void OnButtonClicked()
 {
-    INFO_LOG("ButtonClicked", "tap position: x: {} - y: {}", x, y);
+    utils::Log::TextFormat textFormat(utils::Log::TextStyle::Bold, { 128, 0, 128 });
+    INFO_LOG_WITH_FORMAT(textFormat, "ButtonClicked", "The Button has been clicked!");
 }
 
-int main()
+int main(int argv, char **argc)
 {
+    using namespace gui;
+    utils::Log::s_logThreadMode = utils::MODE::MESSAGE_QUEUE_MT;
     std::unique_ptr<IGUIFactory> guiFactory;
-#if defined(WINAPI_FAMILY)
-    guiFactory = std::make_unique<WinGUIFactory>();
-#endif
+    guiFactory = std::make_unique<GUIFactory>();
     if (guiFactory == nullptr)
     {
         std::terminate();
@@ -250,11 +271,30 @@ int main()
     }
     utils::Connection onClick = button->sig_onClick.Connect(&OnButtonClicked);
 
-    std::this_thread::sleep_for(std::chrono::seconds(1)); // click after 1s
-    // simulate a click here
     Button* actualButton = dynamic_cast<Button*>(button.get());
-    actualButton->SimulateClick(20, 100);
+
+    InputParser parser(argv, argc);
+    float x = -1;
+    float y = -1;
+    if (InputParser::position_t pos = parser.HaveInputOptions(InputOptions({"-x"})))
+    {
+        std::optional<std::string> optX = parser.ExtractValue(pos);
+        if (optX.has_value())
+        {
+            x = atof(optX.value().c_str());
+        }
+    }
+
+    if (InputParser::position_t pos = parser.HaveInputOptions(InputOptions({"-y"})))
+    {
+        std::optional<std::string> optY = parser.ExtractValue(pos);
+        if (optY.has_value())
+        {
+            y = atof(optY.value().c_str());
+        }
+    }
+
+    actualButton->SimulateClick(x, y);
     utils::Log::Wait();
-    system("pause");
     return 0;
 }
