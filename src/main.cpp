@@ -1,7 +1,4 @@
-﻿#if defined(_WIN32) || defined(WIN32)
-#include <winapifamily.h>
-#endif
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Log.h"
 #include "GuiTypes.h"
 #include "InputParser.h"
