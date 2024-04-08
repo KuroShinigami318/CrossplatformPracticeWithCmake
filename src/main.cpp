@@ -251,6 +251,15 @@ void OnButtonClicked()
     INFO_LOG_WITH_FORMAT(textFormat, "ButtonClicked", "The Button has been clicked!");
 }
 
+float ParseCoordinatorValue(InputParser& parser, const InputOptions& options)
+{
+    if (InputParser::position_t pos = parser.HaveInputOptions(options))
+    {
+        return atof(parser.ExtractValue(pos).c_str());
+    }
+    return -1;
+}
+
 int main(int argv, char **argc)
 {
     using namespace gui;
@@ -271,26 +280,8 @@ int main(int argv, char **argc)
     Button* actualButton = dynamic_cast<Button*>(button.get());
 
     InputParser parser(argv, argc);
-    float x = -1;
-    float y = -1;
-    if (InputParser::position_t pos = parser.HaveInputOptions(InputOptions({"-x"})))
-    {
-        std::optional<std::string> optX = parser.ExtractValue(pos);
-        if (optX.has_value())
-        {
-            x = atof(optX.value().c_str());
-        }
-    }
-
-    if (InputParser::position_t pos = parser.HaveInputOptions(InputOptions({"-y"})))
-    {
-        std::optional<std::string> optY = parser.ExtractValue(pos);
-        if (optY.has_value())
-        {
-            y = atof(optY.value().c_str());
-        }
-    }
-
+    float x = ParseCoordinatorValue(parser, InputOptions({ "-x" }));
+    float y = ParseCoordinatorValue(parser, InputOptions({ "-y" }));
     actualButton->SimulateClick(x, y);
     utils::Log::Wait();
     return 0;
