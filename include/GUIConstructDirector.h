@@ -15,7 +15,7 @@ public:
 
     static void ConstructRectangleButton(IGUIBuilder& i_builder, const IRectangleShape& i_buttonShape, const Point& i_buttonPosition)
     {
-        ConstructGUIElement(i_builder, i_buttonPosition, std::move(i_buttonShape.Clone()));
+        ConstructGUIElement(i_builder, i_buttonPosition, i_buttonShape.Clone());
     }
 };
 }
