@@ -23,6 +23,7 @@ float ParseCoordinatorValue(InputParser& parser, const InputOptions& options)
 int main(int argv, char **argc)
 {
     using namespace gui;
+    using ButtonT = details::ResultOkType<ButtonBuilder::BuildResult>::type;
     utils::Log::s_logThreadMode = utils::MODE::MESSAGE_QUEUE_MT;
     std::unique_ptr<IGUIFactory> guiFactory;
     guiFactory = std::make_unique<GUIFactory>();
@@ -35,9 +36,9 @@ int main(int argv, char **argc)
     {
         CRASH_PLAIN_MSG("Error while create button: {}", buildResult.unwrapErr());
     }
-    buildResult.storage().template get<std::unique_ptr<gui::IButton>>()->sig_onAction.Connect(&OnButtonClicked).Detach();
+    buildResult.storage().get<ButtonT>()->sig_onAction.Connect(&OnButtonClicked).Detach();
 
-    Button* actualButton = dynamic_cast<Button*>(buildResult.storage().template get<std::unique_ptr<gui::IButton>>().get());
+    Button* actualButton = dynamic_cast<Button*>(buildResult.storage().get<ButtonT>().get());
 
     InputParser parser(argv, argc);
     float x = ParseCoordinatorValue(parser, InputOptions({ "-x" }));
