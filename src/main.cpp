@@ -29,7 +29,7 @@ int main(int argv, char **argc)
     guiFactory = std::make_unique<GUIFactory>();
     if (guiFactory == nullptr)
     {
-        CRASH();
+        CRASH("This should have never happened!");
     }
     ButtonBuilder::BuildResult buildResult = guiFactory->CreateButton(Point(20, 100), RectangleShape(100, 50));
     if (buildResult.isErr())
