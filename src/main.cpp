@@ -43,5 +43,6 @@ int main(int argv, char **argc)
     float x = ParseCoordinatorValue(parser, InputOptions({ "-x" }));
     float y = ParseCoordinatorValue(parser, InputOptions({ "-y" }));
     actualButton->SimulateClick({ x, y });
+    utils::Log::Wait();
     return 0;
 }
