@@ -24,7 +24,6 @@ int main(int argv, char **argc)
 {
     using namespace gui;
     using ButtonT = details::ResultOkType<ButtonBuilder::BuildResult>::type;
-    utils::Log::s_logThreadMode = utils::MODE::MESSAGE_QUEUE_MT;
     std::unique_ptr<IGUIFactory> guiFactory;
     guiFactory = std::make_unique<GUIFactory>();
     if (guiFactory == nullptr)
@@ -44,6 +43,5 @@ int main(int argv, char **argc)
     float x = ParseCoordinatorValue(parser, InputOptions({ "-x" }));
     float y = ParseCoordinatorValue(parser, InputOptions({ "-y" }));
     actualButton->SimulateClick({ x, y });
-    utils::Log::Wait();
     return 0;
 }
