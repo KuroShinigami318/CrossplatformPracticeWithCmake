@@ -20,7 +20,7 @@ float ParseCoordinatorValue(InputParser& parser, const InputOptions& options)
     return -1;
 }
 
-int main(int argv, char **argc)
+int main(int argc, char **argv)
 {
     using namespace gui;
     using ButtonT = details::ResultOkType<ButtonBuilder::BuildResult>::type;
@@ -39,7 +39,7 @@ int main(int argv, char **argc)
 
     Button* actualButton = dynamic_cast<Button*>(buildResult.storage().get<ButtonT>().get());
 
-    InputParser parser(argv, argc);
+    InputParser parser(argc, argv);
     float x = ParseCoordinatorValue(parser, InputOptions({ "-x" }));
     float y = ParseCoordinatorValue(parser, InputOptions({ "-y" }));
     actualButton->SimulateClick({ x, y });
