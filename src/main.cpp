@@ -24,12 +24,7 @@ int main(int argc, char **argv)
 {
     using namespace gui;
     using ButtonT = details::ResultOkType<ButtonBuilder::BuildResult>::type;
-    std::unique_ptr<IGUIFactory> guiFactory;
-    guiFactory = std::make_unique<GUIFactory>();
-    if (guiFactory == nullptr)
-    {
-        CRASH("This should have never happened!");
-    }
+    std::unique_ptr<IGUIFactory> guiFactory = std::make_unique<GUIFactory>();
     ButtonBuilder::BuildResult buildResult = guiFactory->CreateButton(Point(20, 100), RectangleShape(100, 50));
     if (buildResult.isErr())
     {
