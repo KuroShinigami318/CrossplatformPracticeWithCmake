@@ -32,34 +32,4 @@ static std::string to_string(const gui::Point point)
 }
 }
 
-namespace std
-{
-template <typename T, typename CharT>
-struct formatter;
-
-template <typename CharT>
-struct formatter<gui::Point, CharT> : formatter<std::string, CharT>
-{
-    template <typename FormatContext>
-    auto format(gui::Point point, FormatContext& ctx) const
-    {
-        return formatter<std::string, CharT>::format(to_string(point), ctx);
-    }
-};
-}
-
-namespace utils
-{
-template <typename T, typename CharT>
-struct Formatter;
-
-template <typename CharT>
-struct Formatter<gui::Point, CharT>
-{
-    template <typename _FormatContext>
-    auto Format(gui::Point point, _FormatContext& ctx) const
-    {
-        return ctx.parseContext.template Parse<std::string>(to_string(point));
-    }
-};
-}
+MAKE_FORMATTABLE(gui::Point, std::string, to_string);
