@@ -4,6 +4,7 @@
 #include "GUIFactory.h"
 #include "Shapes/RectangleShape.h"
 #include "InputParser.h"
+#include <flag_set.h>
 
 void OnButtonClicked()
 {
@@ -20,8 +21,25 @@ float ParseCoordinatorValue(InputParser& parser, const InputOptions& options)
     return -1;
 }
 
+ENUM_DEFINE(test, size_t,
+	abc = 1 << 0,
+	x = 1 << 1,
+	a = 1 << 2,
+	d = 1 << 3,
+	e = 1 << 4,
+	f = 1 << 5,
+	g = 1 << 6,
+	h = 1 << 7,
+	y = 1 << 8,
+	z = 1 << 9
+);
+
 int main(int argc, char **argv)
 {
+    utils::flag_set<test> flags;
+    flags.set(test::abc);
+    flags.flip(test::x);
+    ASSERT(flags.test_all(test::x, test::abc));
     using namespace gui;
     using ButtonT = utils::details::ResultOkType<ButtonBuilder::BuildResult>::type;
     std::unique_ptr<IGUIFactory> guiFactory = std::make_unique<GUIFactory>();
