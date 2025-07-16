@@ -23,7 +23,7 @@ float ParseCoordinatorValue(InputParser& parser, const InputOptions& options)
 int main(int argc, char **argv)
 {
     using namespace gui;
-    using ButtonT = details::ResultOkType<ButtonBuilder::BuildResult>::type;
+    using ButtonT = utils::details::ResultOkType<ButtonBuilder::BuildResult>::type;
     std::unique_ptr<IGUIFactory> guiFactory = std::make_unique<GUIFactory>();
     ButtonBuilder::BuildResult buildResult = guiFactory->CreateButton(Point(20, 100), RectangleShape(100, 50));
     if (buildResult.isErr())

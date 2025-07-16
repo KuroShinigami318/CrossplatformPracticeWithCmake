@@ -12,7 +12,7 @@ class ButtonBuilder : public IGUIBuilder
 public:
     DeclareInnerScopedEnum(BuildErrorCode, uint8_t, InvalidPosition, UnsetShape);
     using BuildError = utils::Error<BuildErrorCode>;
-    using BuildResult = Result<std::unique_ptr<IButton>, BuildError>;
+    using BuildResult = utils::Result<std::unique_ptr<IButton>, BuildError>;
 
 public:
     ButtonBuilder();
