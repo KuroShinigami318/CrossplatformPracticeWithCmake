@@ -5,6 +5,7 @@
 #include "Shapes/RectangleShape.h"
 #include "InputParser.h"
 #include <flag_set.h>
+#include <set>
 
 void OnButtonClicked()
 {
@@ -38,8 +39,19 @@ int main(int argc, char **argv)
 {
     utils::flag_set<test> flags;
     flags.set(test::abc);
+    flags.set(test::a);
     flags.flip(test::x);
+	std::vector<test> flagsVector = { test::a, test::abc };
+	std::unordered_set<test> flagsUnorderedSet = { test::a, test::abc };
+	std::set<test> flagsSet = { test::a, test::abc };
+	std::list<test> flagsList = { test::a, test::abc };
+    size_t combinedFlags = flags.combine(test::a, test::abc);
     ASSERT(flags.test_all(test::x, test::abc));
+    ASSERT(flags.test_all(combinedFlags));
+    ASSERT(flags.test_all(flagsVector));
+    ASSERT(flags.test_all(flagsUnorderedSet));
+    ASSERT(flags.test_all(flagsSet));
+    ASSERT(flags.test_all(flagsList));
     using namespace gui;
     using ButtonT = utils::details::ResultOkType<ButtonBuilder::BuildResult>::type;
     std::unique_ptr<IGUIFactory> guiFactory = std::make_unique<GUIFactory>();
